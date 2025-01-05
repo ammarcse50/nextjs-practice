@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: post.title || "Post Not Found",
     description: post.body || "No description available.",
+    keywords: post.body.split(" "),
   };
 }
 
