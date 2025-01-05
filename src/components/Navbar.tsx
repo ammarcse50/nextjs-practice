@@ -46,7 +46,7 @@ const Navbar = () => {
       </h2>
       <ul className="flex gap-x-10 text-white font-bold">
         {links?.map((link) => (
-          <>
+          <div key={link.path}>
             <li>
               <Link
                 className={`${pathName === link.path && "bg-green-600"}`}
@@ -56,7 +56,7 @@ const Navbar = () => {
                 {link.title}
               </Link>
             </li>
-          </>
+          </div>
         ))}
       </ul>
       <button
