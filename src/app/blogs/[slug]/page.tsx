@@ -9,7 +9,6 @@ const details = ({ params }) => {
       <h2 className="font-bold text-2xl">SLUG : {slug}</h2>
       <h2 className="font-bold text-xl">{title}</h2>
       <h2>
-        {" "}
         <strong>Description : </strong>
         <p> {description}</p>
       </h2>
