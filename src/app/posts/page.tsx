@@ -6,10 +6,12 @@ const Page = async () => {
   try {
     // Fetch user data from Prisma
     const userData = await prisma.user.findMany();
+    const userData1 = await prisma.invoices.findMany();
+
+    console.log("invoices",userData1);
 
     console.log("User data:", userData);
 
-    // Ensure userData is valid and not undefined/null
     if (!userData || userData.length === 0) {
       return (
         <div className="p-4">
@@ -35,6 +37,14 @@ const Page = async () => {
             </button>
           </div>
         ))}
+
+        <div>
+          <form action="">
+            <input type="text" name="name" />
+            <input type="text" name="email" />
+            <input type="text" name="role" />
+          </form>
+        </div>
       </div>
     );
   } catch (error) {
