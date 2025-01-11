@@ -94,7 +94,9 @@ export default function CreateUser() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">create</button>
+        <button className="px-4 py-2 bg-green-400" type="submit">
+          create
+        </button>
       </form>
 
       <div>
@@ -105,7 +107,7 @@ export default function CreateUser() {
               <p>Name: {user.name}</p>
               <p>Email: {user.email}</p>
               <button className="bg-red-600 rounded px-5 py-2 my-3 hover:bg-red-500">
-                <Link href={`/users/create/${user.id}`}> Update</Link>
+                <Link href={`/users/${user.id}`}> Update</Link>
               </button>
               <button
                 onClick={() => handleDelete(user.id)}

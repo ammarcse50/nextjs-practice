@@ -17,11 +17,27 @@ export async function GET(req: NextRequest) {
     // Fetch data using Prisma with a case-insensitive `contains` operator
     const results = await prisma.item.findMany({
       where: {
-        name: {
-          contains: query.toLowerCase(),
+        OR: [
+          {
+            name: {
+              contains: query.toLowerCase(),
               // For case-insensitive search (MariaDB/MySQL support)
-        },
+            },
+          },
+          {
+            item_category: {
+              title: {
+                contains: query.toLowerCase(),
+              },
+            },
+          },
+        ],
       },
+
+      include: {
+        item_category: true,
+      },
+
       take: 10, // Optional: Limit results to 10
     });
 

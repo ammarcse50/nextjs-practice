@@ -3,13 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
-model Item {
-  id   Int    @id @default(autoincrement())
-  name String
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model customers {
@@ -22,7 +18,7 @@ model invoices {
   id          Int       @id @default(autoincrement())
   amount      Float
   customer_id Int
-  customers   customers @relation(fields: [customer_id], references: [id], map: "Invoices_customer_id_fkey")
+  customers   customers @relation(fields: [customer_id], references: [id])
 
   @@index([customer_id], map: "Invoices_customer_id_fkey")
 }
@@ -32,4 +28,18 @@ model user {
   name     String
   email    String
   password String
+}
+
+model item_category {
+  id    Int    @id @default(autoincrement())
+  title String
+  item  item[]
+}
+
+model item {
+  id              Int            @id @default(autoincrement())
+  name            String
+  cost            Int?
+  item_categoryId Int?
+  item_category   item_category? @relation(fields: [item_categoryId], references: [id])
 }

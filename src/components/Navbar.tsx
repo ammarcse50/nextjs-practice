@@ -46,6 +46,14 @@ const Navbar = () => {
       title: "Photos",
       path: "/photos",
     },
+    {
+      title: "Users",
+      path: "/users",
+    },
+    {
+      title: "Invoices",
+      path: "/invoices",
+    },
   ];
   return (
     <nav className="bg-red-600 flex justify-between px-10 py-4">
