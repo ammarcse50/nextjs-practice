@@ -1,20 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Item } from "@prisma/client";
+import { item } from "@prisma/client";
+import Link from "next/link";
 
 export default function Dashboard() {
-  const [itemList, setItemList] = useState<Item[]>([]);
-  const [itemCart, setItemCart] = useState<Item[]>([]);
+  const [itemList, setItemList] = useState<item[]>([]);
+  const [itemCart, setItemCart] = useState<item[]>([]);
   const [customer, setCustomer] = useState<string>("");
   const [invoiceTitle, setInvoiceTitle] = useState<string>("");
   const [itemCost, setItemCost] = useState<number>(1);
   const [itemQuantity, setItemQuantity] = useState<number>(1);
+  const [itemPrice, setItemPrice] = useState<number>();
+
+  useEffect(() => {
+    setItemPrice(itemCost * itemQuantity);
+  }, [itemQuantity, itemCost]);
+
   const [itemName, setItemName] = useState<string>("");
   const [customers, setCustomers] = useState([]);
-  const router = useRouter();
 
-  console.log(itemCart);
+  console.log("itemPrice", itemPrice);
+
   const fetchAllCustomer = async () => {
     await fetch("http://localhost:3000/api/customers")
       .then((res) => res.json())
@@ -39,7 +45,7 @@ export default function Dashboard() {
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
-    if (itemName.trim() && itemCost > 0 && itemQuantity >= 1) {
+    if (itemName.trim() && itemCost >= 0 && itemQuantity >= 1) {
       setItemCart([
         ...itemCart,
         {
@@ -50,6 +56,8 @@ export default function Dashboard() {
           price: itemCost * itemQuantity,
         },
       ]);
+    } else {
+      alert("Please ensure the cost is valid and quantity is at least 1.");
     }
 
     setItemName("");
@@ -59,24 +67,16 @@ export default function Dashboard() {
 
   const getTotalAmount = () => {
     let total = 0;
-    itemList.forEach((item) => {
-      total += item.price;
+    itemCart.forEach((item) => {
+      total += item.price * item.quantity;
     });
     return total;
   };
 
+  const getAmount = getTotalAmount();
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-
-
-
-
-
-
-
-
-    
   };
 
   return (
@@ -94,9 +94,12 @@ export default function Dashboard() {
               onChange={(e) => setCustomer(e.target.value)}
             >
               {customers.map((customer: any) => (
-                <option key={customer.id} value={customer.name}>
-                  {customer.name}
-                </option>
+                <>
+                  <option disabled selected></option>
+                  <option key={customer.id} value={customer.name}>
+                    {customer.name}
+                  </option>
+                </>
               ))}
             </select>
 
@@ -124,13 +127,15 @@ export default function Dashboard() {
                     onChange={(e) => setItemName(e.target.value)}
                   >
                     {itemList.map((item: any) => (
-                      <option key={item.id} value={item.name}>
-                        {item.name}
-                      </option>
+                      <>
+                        <option disabled selected></option>
+                        <option key={item.id} value={item.name}>
+                          {item.name}
+                        </option>
+                      </>
                     ))}
                   </select>
                 </div>
-
                 <div className="flex flex-col w-1/4">
                   <label htmlFor="itemCost" className="text-sm">
                     Cost
@@ -140,8 +145,10 @@ export default function Dashboard() {
                     className="border-[1px] p-2 rounded-sm mb-3"
                     required
                     value={itemCost}
-                    onChange={(e) => setItemCost(e.target.value)}
+                    onChange={(e) => setItemCost(Number(e.target.value))}
                   >
+                    {/* Add default zero-cost option */}
+                    <option value={0}>0</option>
                     {itemList.map((item: any) => (
                       <option key={item.id} value={item.cost}>
                         {item.cost}
@@ -183,7 +190,20 @@ export default function Dashboard() {
               className="bg-blue-800 text-gray-100 w-full p-4 rounded my-6"
               type="submit"
             >
-              SAVE & PREVIEW INVOICE
+              <Link
+                href={{
+                  pathname: "/invoices/history",
+                  query: {
+                    itemName,
+                    invoiceTitle,
+                    customer,
+                    itemCost,
+                    getAmount,
+                  },
+                }}
+              >
+                SAVE & PREVIEW INVOICE
+              </Link>
             </button>
           </form>
         </div>
