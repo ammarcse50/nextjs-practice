@@ -43,3 +43,10 @@ model item {
   item_categoryId Int?
   item_category   item_category? @relation(fields: [item_categoryId], references: [id])
 }
+
+ model invoice_item {
+  id               Int?
+  product_name     String?  @db.VarChar(100)
+  product_price    Decimal? @db.Decimal(10, 0)
+  product_quantity Int?
+ }

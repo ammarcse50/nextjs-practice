@@ -60,12 +60,18 @@ const Navbar = () => {
       <h2 className="font-bold text-xl ">
         Next <span className="text-black font-bold">Js</span>
       </h2>
-      <ul className="flex gap-x-10 text-white font-bold">
+      <ul className="flex gap-x-10 text-white font-bold ">
         {links?.map((link) => (
-          <div key={link.path}>
+          <div
+            key={link.path}
+            className="hover:bg-green-800 hover:px-4 py-2 rounded"
+          >
             <li>
               <Link
-                className={`${pathName === link.path && "bg-green-600"}`}
+                className={`${
+                  pathName === link.path &&
+                  "bg-green-600 px-4 py-2 rounded-xl hover:bg-green-800"
+                }`}
                 key={link.path}
                 href={link.path}
               >
