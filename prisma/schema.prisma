@@ -8,21 +8,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-model customers {
-  id       Int        @id @default(autoincrement())
-  name     String
-  invoices invoices[]
-}
-
-model invoices {
-  id          Int       @id @default(autoincrement())
-  amount      Float
-  customer_id Int
-  customers   customers @relation(fields: [customer_id], references: [id])
-
-  @@index([customer_id], map: "Invoices_customer_id_fkey")
-}
-
 model user {
   id       Int    @id @default(autoincrement())
   name     String
@@ -44,9 +29,77 @@ model item {
   item_category   item_category? @relation(fields: [item_categoryId], references: [id])
 }
 
- model invoice_item {
-  id               Int?
+model customers {
+  id       Int        @id @default(autoincrement())
+  name     String
+  invoices invoices[]
+}
+
+model invoices {
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  customerId   Int
+  discount     Float
+  dueAmount    Float
+  invoiceDate  DateTime       @default(now())
+  paymentMade  Float          @default(0)
+  status       String
+  subtotal     Float
+  total        Float
+  updatedAt    DateTime       @updatedAt
+  customer     customers      @relation(fields: [customerId], references: [id])
+  invoice_item invoice_item[]
+
+  @@index([customerId])
+}
+
+model invoice_item {
+  id               Int      @id @default(autoincrement())
   product_name     String?  @db.VarChar(100)
   product_price    Decimal? @db.Decimal(10, 0)
   product_quantity Int?
- }
+  invoice_id       Int
+  invoices         invoices @relation(fields: [invoice_id], references: [id])
+}
+
+model dl_email_settings {
+  id                 BigInt    @id @default(autoincrement())
+  company_id         BigInt
+  name_email_from    String    @db.VarChar(50)
+  email_id_from      String    @db.VarChar(50)
+  smtp_mail_server   String    @db.VarChar(100)
+  smtp_port          String    @db.VarChar(50)
+  ssl_or_tls         String    @db.VarChar(50)
+  smtp_user_id       String    @db.VarChar(255)
+  smtp_user_password String    @db.VarChar(255)
+  is_default         Boolean   @default(false)
+  created_at         DateTime? @db.DateTime(0)
+  created_by         BigInt
+  updated_at         DateTime? @db.DateTime(0)
+  updated_by         BigInt?
+  is_active          Boolean   @default(true)
+}
+
+model users {
+  id                         BigInt    @id @default(autoincrement())
+  company_id                 BigInt
+  username                   String    @db.VarChar(200)
+  username_secondary         String?   @db.VarChar(200)
+  email                      String?   @db.VarChar(255)
+  phone                      String?   @db.VarChar(255)
+  password                   String    @db.VarChar(300)
+  role_id                    BigInt?
+  language_id_default_choice Int?
+  is_lock                    Boolean?  @default(false)
+  is_default_user            Boolean   @default(false)
+  created_at                 DateTime  @db.DateTime(0)
+  created_by                 BigInt
+  updated_at                 DateTime? @db.DateTime(0)
+  updated_by                 BigInt?
+  is_active                  Boolean   @default(true)
+  is_approved                Boolean   @default(false)
+  is_temporary_password      Boolean   @default(false)
+
+  @@unique([username, company_id], map: "username")
+  @@index([role_id], map: "ref_role_id")
+}

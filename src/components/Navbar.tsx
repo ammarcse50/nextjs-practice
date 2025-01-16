@@ -64,13 +64,13 @@ const Navbar = () => {
         {links?.map((link) => (
           <div
             key={link.path}
-            className="hover:bg-green-800 hover:px-4 py-2 rounded"
+            className="hover:bg-blue-800 hover:px-4 py-2 rounded"
           >
             <li>
               <Link
                 className={`${
                   pathName === link.path &&
-                  "bg-green-600 px-4 py-2 rounded-xl hover:bg-green-800"
+                  "bg-blue-800 px-4 py-2 rounded-xl hover:bg-blue-800"
                 }`}
                 key={link.path}
                 href={link.path}

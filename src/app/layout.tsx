@@ -35,7 +35,6 @@ export default function RootLayout({
         <AuthProvider>
           <Navbar></Navbar>
           <div className="h-screen"> {children}</div>
-          <footer>this is footer</footer>
         </AuthProvider>
       </body>
     </html>
